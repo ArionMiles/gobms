@@ -26,16 +26,16 @@ client := gobms.NewClient("Mumbai", "MUMBAI")
 ## Get a list of movies currently showing
 ```go
 qb, err := client.GetQuickbook("MT")
-	if err != nil {
-		// Handle Error
-	}
+if err != nil {
+    // Handle Error
+}
 
-	for _, movie := range qb.MovieData.BookMyShow.ArrEvents {
-		fmt.Println(movie.Title)
-		for _, childEvent := range movie.ChildEvents {
-			fmt.Println(childEvent.Language, childEvent.Dimension)
-		}
-	}
+for _, movie := range qb.MovieData.BookMyShow.ArrEvents {
+    fmt.Println(movie.Title)
+    for _, childEvent := range movie.ChildEvents {
+        fmt.Println(childEvent.Language, childEvent.Dimension)
+    }
+}
 ```
 
 ## Get list of popular theaters in your region
