@@ -14,8 +14,6 @@ import (
 const baseURL = "https://in.bookmyshow.com/serv/getData"
 const showtimesURL = "https://in.bookmyshow.com/buytickets/%v-%v/movie-%v-%v/%v"
 
-// type MT string
-
 // NewClient instantiates a Client struct with a Region Name and Region Code
 //
 // Example:
