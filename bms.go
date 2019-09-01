@@ -18,8 +18,11 @@ const showtimesURL = "https://in.bookmyshow.com/buytickets/%v-%v/movie-%v-%v/%v"
 //
 // Example:
 // 	c := bms.NewClient("MUMBAI", "Mumbai")
-func NewClient(RegionCode, RegionName string) *Client {
-	jar, _ := cookiejar.New(nil)
+func NewClient(RegionCode, RegionName string) (*Client, error) {
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		return nil, err
+	}
 	var cookies []*http.Cookie
 	cookieStr := fmt.Sprintf("|Code=%v|text=%v|", RegionCode, RegionName)
 	urlencodedcookie := url.QueryEscape(cookieStr)
@@ -29,7 +32,10 @@ func NewClient(RegionCode, RegionName string) *Client {
 	}
 
 	cookies = append(cookies, cookie)
-	u, _ := url.Parse(baseURL)
+	u, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, err
+	}
 	jar.SetCookies(u, cookies)
 
 	httpclient := &http.Client{
@@ -42,7 +48,7 @@ func NewClient(RegionCode, RegionName string) *Client {
 		HTTPClient: httpclient,
 	}
 
-	return client
+	return client, nil
 
 }
 

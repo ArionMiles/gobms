@@ -18,7 +18,10 @@ You must first initialize the `gobms.NewClient` with a `RegionCode` and `RegionN
 `gobms.GetRegionList` returns a list of Regions which you can inspect to find the region name and code for your particular city.
 
 ```go
-client := gobms.NewClient("Mumbai", "MUMBAI")
+client, err := gobms.NewClient("Mumbai", "MUMBAI")
+if err != nil {
+    // Handle Error
+}
 ```
 
 **NOTE:** Go through the [models.go](models.go) to find more attribute information.
