@@ -229,7 +229,6 @@ func (c *Client) GetShowtimes(eventCode, venueCode string, date time.Time) ([]Sh
 		return nil, err
 	}
 
-	fmt.Println()
 	if len(showtimes.BookMyShow.ArrShows) > 0 {
 		return showtimes.BookMyShow.ArrShows, nil
 	}
