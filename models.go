@@ -31,7 +31,7 @@ type Cinemas struct {
 
 // RegionalCinemaDetail contains information regarding Theaters in a region
 type RegionalCinemaDetail struct {
-	IsATMOSEnabled string `json:"IsATMOSEnable"`
+	IsATMOSEnabled string `json:"IsATMOSEnabled"`
 	Address        string `json:"VenueAddress"`
 	Code           string `json:"VenueCode"`
 	Latitude       string `json:"VenueLatitude"`
