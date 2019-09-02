@@ -1,5 +1,7 @@
 # GoBMS
 
+[![GoDoc](https://godoc.org/github.com/ArionMiles/gobms?status.svg)](https://godoc.org/github.com/ArionMiles/gobms)
+
 An unofficial API wrapper for BookMyShow.com written in Go
 
 ## Installation
