@@ -1,4 +1,4 @@
-package gobms
+package bms
 
 import "net/http"
 

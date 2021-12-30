@@ -1,4 +1,4 @@
-package gobms
+package bms
 
 import (
 	"encoding/json"
@@ -13,8 +13,9 @@ import (
 
 const baseURL = "https://in.bookmyshow.com/serv/getData"
 const showtimesURL = "https://in.bookmyshow.com/buytickets/%v-%v/movie-%v-%v/%v"
+const bookTicketsURL = "https://in.bookmyshow.com/booktickets/%v/%v"
 
-// NewClient instantiates a Client struct with a Region Name and Region Code
+// NewClient instantiates a Client struct with a Region Code and Region Name
 //
 // Example:
 // 	c := bms.NewClient("MUMBAI", "Mumbai")
@@ -106,8 +107,8 @@ func (c *Client) GetQuickbook(eventType string) (*QuickBook, error) {
 	return &qb, nil
 }
 
-// GetPreferredCinemas returns a list of popular cinemas in your region
-func (c *Client) GetPreferredCinemas() (*PopularCinemas, error) {
+// ListPreferredCinemas returns a list of popular cinemas in your region
+func (c *Client) ListPreferredCinemas() (*PopularCinemas, error) {
 	resp, err := c.get("GETPREFERREDCINEMAS", nil)
 	if err != nil {
 		return nil, err
@@ -125,8 +126,8 @@ func (c *Client) GetPreferredCinemas() (*PopularCinemas, error) {
 	return &cinemas, nil
 }
 
-// GetMovieList returns a slice of movie titles
-func (c *Client) GetMovieList() ([]string, error) {
+// ListMovieTitles returns a slice of movie titles
+func (c *Client) ListMovieTitles() ([]string, error) {
 	qb, err := c.GetQuickbook("MT")
 	if err != nil {
 		return nil, err
@@ -169,9 +170,7 @@ func (c *Client) GetMovieURL(movieName, language, dimension string, date time.Ti
 		}
 	}
 
-	err = goBMSError{
-		fmt.Sprintf("%v not found!", movieName),
-	}
+	err = fmt.Errorf("%v not found!", movieName)
 
 	return nil, err
 }
@@ -193,18 +192,14 @@ func (c *Client) GetEventCode(movieName, language, dimension string) (string, er
 		}
 	}
 
-	err = goBMSError{
-		fmt.Sprintf("Event Code for %v not found!", movieName),
-	}
+	err = fmt.Errorf("Event Code for %v not found!", movieName)
 
 	return "", err
 }
 
 // GetShowtimes returns a slice of Showtimes (ArrShows) for a movie at a particular
-// venue (theater) on a particular date
+// venue (theater) on a particular date.
 func (c *Client) GetShowtimes(eventCode, venueCode string, date time.Time) ([]Show, error) {
-	// Date shouldn't be string
-	// Should return error/nil if no shows found
 	formattedDate := date.Format("20060102")
 	params := map[string]string{
 		"f":  "json",
@@ -223,6 +218,7 @@ func (c *Client) GetShowtimes(eventCode, venueCode string, date time.Time) ([]Sh
 	if err != nil {
 		return nil, err
 	}
+
 	var showtimes Showtimes
 	json.Unmarshal([]byte(jsonData), &showtimes)
 	if err != nil {
@@ -232,9 +228,8 @@ func (c *Client) GetShowtimes(eventCode, venueCode string, date time.Time) ([]Sh
 	if len(showtimes.BookMyShow.ArrShows) > 0 {
 		return showtimes.BookMyShow.ArrShows, nil
 	}
-	err = goBMSError{
-		"No Shows Found!",
-	}
+
+	err = fmt.Errorf("No Shows Found!")
 	return nil, err
 }
 
@@ -249,8 +244,8 @@ func (c *Client) buildMovieURL(event *ChildEvent, date time.Time) (*url.URL, err
 	return movieURL, nil
 }
 
-// GetTheaterData returns slice of Cinemas in your region
-func (c *Client) GetTheaterData() ([]RegionalCinemaDetail, error) {
+// ListTheaters returns slice of Cinemas in your region
+func (c *Client) ListTheaters() ([]RegionalCinemaDetail, error) {
 	qb, err := c.GetQuickbook("MT")
 	if err != nil {
 		return nil, err
@@ -260,7 +255,7 @@ func (c *Client) GetTheaterData() ([]RegionalCinemaDetail, error) {
 
 // GetShowtimeURL returns booking URL for a specific Show
 func GetShowtimeURL(venueCode, sessionID string) (*url.URL, error) {
-	formattedURL := fmt.Sprintf("https://in.bookmyshow.com/booktickets/%v/%v", venueCode, sessionID)
+	formattedURL := fmt.Sprintf(bookTicketsURL, venueCode, sessionID)
 	showtimeURL, err := url.Parse(formattedURL)
 	if err != nil {
 		return nil, err
@@ -268,18 +263,18 @@ func GetShowtimeURL(venueCode, sessionID string) (*url.URL, error) {
 	return showtimeURL, nil
 }
 
-// GetRegionList returns Region list including the name, code and alias of a region
+// ListRegions returns Region list including the name, code and alias of a region
 // from GETREGIONS Endpoint
 //
 // Example:
-// 		regionList, err := bms.GetRegionList()
+// 		regions, err := bms.ListRegions()
 // 		if err != nil {
 // 			log.Print(err)
 // }
-//		for _, rgn := range regionList {
-//   		fmt.Println(rgn[0].Name)
+//		for _, region := range *regions {
+//   		fmt.Println(region[0].Name)
 //		}
-func GetRegionList() (*Regions, error) {
+func ListRegions() (*Regions, error) {
 	resp, err := http.Get(baseURL + "?cmd=GETREGIONS")
 	if err != nil {
 		return nil, err
