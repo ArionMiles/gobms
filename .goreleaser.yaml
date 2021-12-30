@@ -11,12 +11,10 @@ builds:
   - binary: gobms
     goos:
       - darwin
-      - windows
       - linux
     goarch:
       - amd64
       - arm64
-      - 386
     env:
       - CGO_ENABLED=0
       - GO111MODULE=on
