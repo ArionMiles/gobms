@@ -15,7 +15,7 @@ go get github.com/ArionMiles/gobms
 To install the CLI use:
 
 ```
-go install github.com/ArionMiles/gobms/cli@v1.0.0
+go install github.com/ArionMiles/gobms/gobms@v1.0.0
 ```
 
 Note: If you have not done so already be sure to add `$GOPATH/bin` to your `PATH`.
